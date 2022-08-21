@@ -35,26 +35,6 @@ function usePaymentForm() {
       return;
     }
 
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/credit-cards`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          paymentMethodId,
-        }),
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const responseJson = await response.json();
-
-    const clientSecret = responseJson.client_secret;
-
-    stripe?.confirmCardSetup(clientSecret);
-
     const chargeResponse = await fetch(
       `${process.env.REACT_APP_API_URL}/charge`,
       {
@@ -77,6 +57,26 @@ function usePaymentForm() {
 
       await stripe?.confirmCardPayment(secret);
     }
+
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/credit-cards`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          paymentMethodId,
+        }),
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const responseJson = await response.json();
+
+    const clientSecret = responseJson.client_secret;
+
+    stripe?.confirmCardSetup(clientSecret);
   };
 
   return {
